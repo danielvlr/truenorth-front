@@ -1,45 +1,35 @@
-import { Component } from "react";
-import { Navigate } from "react-router-dom";
-import AuthService from "../services/auth.service";
-import IUser from "../types/user.type";
+import { useState, useEffect } from 'react';
+import recordService from '../services/record.service';
+import { Record } from '../types/record.type';
 
-type Props = {};
 
-type State = {
-  redirect: string | null,
-  userReady: boolean,
-  currentUser: IUser & { accessToken: string }
-}
-export default class UserRecord extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      redirect: null,
-      userReady: false,
-      currentUser: { accessToken: "" }
+function UserRecord() {
+  const [items, setItems] = useState<Record[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const content = await recordService.getContent();
+        setItems(content);
+        console.log(items);
+      } catch (error) {
+        console.error('Erro ao obter os dados:', error);
+      }
     };
-  }
 
-  componentDidMount() {
-    const currentUser = AuthService.getCurrentUser();
+    fetchData();
+  }, []);
 
-    if (!currentUser) 
-      this.setState({ redirect: "/home" });
-    this.setState({ currentUser: currentUser, userReady: true })
-  }
-
-  render() {
-    if (this.state.redirect) {
-      return <Navigate to={this.state.redirect} />
-    }
-
-    const { currentUser } = this.state;
-
-    return (
-      <div className="container">
-        UserRecord
-      </div>
-    );
-  }
+  return (
+    <div>
+      <h1>Lista de Itens</h1>
+      <ul>
+      {items &&
+          items.map((item, i) => (
+            <li key={i}>amount: {item.amount}</li>
+          ))}
+      </ul>
+    </div>
+  );
 }
+
+export default UserRecord;

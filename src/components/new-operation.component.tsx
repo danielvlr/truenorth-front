@@ -1,45 +1,29 @@
-import { Component } from "react";
-import { Navigate } from "react-router-dom";
-import AuthService from "../services/auth.service";
-import IUser from "../types/user.type";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-type Props = {};
-
-type State = {
-  redirect: string | null,
-  userReady: boolean,
-  currentUser: IUser & { accessToken: string }
+interface Item {
+  id: number;
+  nome: string;
 }
-export default class NewOperation extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
 
-    this.state = {
-      redirect: null,
-      userReady: false,
-      currentUser: { accessToken: "" }
-    };
-  }
+function NewOperation() {
+  const [items, setItems] = useState<Item[]>([]); 
+  useEffect(() => {
 
-  componentDidMount() {
-    const currentUser = AuthService.getCurrentUser();
 
-    if (!currentUser) 
-      this.setState({ redirect: "/home" });
-    this.setState({ currentUser: currentUser, userReady: true })
-  }
 
-  render() {
-    if (this.state.redirect) {
-      return <Navigate to={this.state.redirect} />
-    }
+  }, []);
 
-    const { currentUser } = this.state;
-
-    return (
-      <div className="container">
-        NewOperation
-      </div>
-    );
-  }
+  return (
+    <div>
+      <h1>Lista de Itens</h1>
+      <ul>
+        {items.map(item => (
+          <li key={item.id}>{item.nome}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
+
+export default NewOperation;
