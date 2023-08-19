@@ -1,4 +1,5 @@
 export interface Record {
+  id: number;
   operation: string;
   amount: number;
   userBalance: number;

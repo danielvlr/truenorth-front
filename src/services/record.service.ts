@@ -8,6 +8,7 @@ class RecordService {
   getContent() {
     return axios.get(API_URL, { headers: authHeader() })
       .then(response => {
+        console.log(response.data);
         return response.data;
       })
       .catch(error => {
